@@ -1,13 +1,18 @@
 # molachat
 ### 一款随处部署的轻量级聊天软件，提供单人聊天，多人聊天，文件传输，音视频通话等功能。
 ### 提供网页与安卓app两种应用，可实现跨端文件传输、音视频通话、跨终端屏幕共享。
-#### cordova多平台构建移动端app
+- #### cordova多平台构建移动端app
 
-#### springboot搭建聊天、信令、文件服务器
 
-#### coturn实现NAT穿透，成功率99.9%
+- #### springboot搭建聊天、信令、文件服务器
 
-#### chatgpt机器人访问
+
+- #### coturn实现NAT穿透，成功率99.9%
+
+
+- #### chatgpt机器人访问，支持markdown、代码高亮
+
+- #### 支持jdk8、11，安卓termux服务器部署
 
 #### 个人主页：https://molaspace.xyz
 
@@ -65,7 +70,63 @@ sh server_start.sh
 # 关闭服务
 sh server_shutdown.sh
 ```
-## 三、coturn服务器搭建（可选）
+## 三、在termux上部署服务端
+
+#### 前置准备：
+
+- molachat服务端jar包（构建获取，暂不提供release包）
+- 废旧安卓手机一只（无需root）
+- termux应用程序
+- java11环境（推荐**jvdroid_termux_openjdk**）
+
+#### 启动服务器：
+
+- 启动脚本
+
+```bash
+cd ~
+mkdir molachat
+cd molachat
+#!/bin/bash
+java -Xmx1024m -jar ./molachat.jar \
+--server.port=8550 \
+--self-conf.connect-timeout=60000 \
+--self-conf.close-timeout=3600000 \
+--self-conf.max-client-num=20 \
+--self-conf.max-session-message-num=200 \
+--self-conf.max-file-size=1000 \
+--self-conf.max-request-size=1000 \
+--management.server.port=9002 \
+--self-conf.upload-file-path=/data/data/com.termux/files/home/molachat/tmp/{app.id} \
+--app.id=molachat001 \
+--app.server-type=tomcat \
+--app.version=2.3.1 \
+--app.level-d-b-storage-prefix=/data/data/com.termux/files/home/molachat/leveldb \
+--app.robot-api-key.chatGpt=sk-xxxx \
+&
+```
+
+- 关闭脚本
+
+```bash
+#!/bin/bash
+curl -X POST https://localhost:9002/actuator/shutdown -k
+echo \n
+```
+
+#### 客户端连接
+
+右侧弹出菜单，切换连接服务器：格式是ip:host
+
+#### chatgpt使用
+
+在启动脚本中配置app.robot-api-key.chatGpt=你的openai apiKey
+
+作为服务端的手机，开启科学上网
+
+找到用户**翻斗鱼**，他会回答你的问题
+
+## 四、coturn服务器搭建（可选）
 
 #### coturn用于视频通信中进行信令交换后的NAT穿透，建立点对点连接，具体安装如下：
 
