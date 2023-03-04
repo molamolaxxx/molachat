@@ -72,22 +72,61 @@ sh server_shutdown.sh
 ```
 ## 三、在termux上部署服务端
 
-#### 前置准备：
+### 1、在安卓手机上安装termux
 
-- molachat服务端jar包（构建获取，暂不提供release包）
-- 废旧安卓手机一只（无需root）
-- termux应用程序
-- java11环境（推荐**jvdroid_termux_openjdk**）
+### 2、安装jdk
 
-#### 启动服务器：
-
-- 启动脚本
+- #### 用ssh连接到手机，切换到home目录
 
 ```bash
 cd ~
+```
+
+- #### 下载jdk
+
+```bash
+wget https://molaspace.xyz:8550/chat/files/PQxyz_jvdroid_termux_openjdk_11.0.1.tar.xz
+mv PQxyz_jvdroid_termux_openjdk_11.0.1.tar.xz jvdroid_termux_openjdk_11.0.1.tar.xz
+```
+
+- #### 解压
+
+```bash
+mkdir jdk
+cd jdk
+tar xJvf ../jvdroid_termux_openjdk_11.0.1.tar.xz
+```
+
+- #### 配置环境变量
+
+```bash
+vim ~/.bashrc
+JAVA_HOME=/data/data/com.termux/files/home/jdk
+export PATH=$JAVA_HOME/bin:$PATH
+export LD_LIBRARY_PATH="/data/data/com.termux/files/home/jdk/lib:/data/data/com.termux/files/home/jdk/jli"
+```
+
+输入`java -version`测试
+
+### 3、启动molachat
+
+- #### 下载molachat服务端jar包
+
+```bash
+cd  ~
 mkdir molachat
 cd molachat
-#!/bin/bash
+wget https://molaspace.xyz:8550/chat/files/vIRvM_molachat.jar
+mv vIRvM_molachat.jar molachat.jar
+```
+
+- #### 编辑启动脚本
+
+```bash
+vim start.sh
+```
+
+```bash
 java -Xmx1024m -jar ./molachat.jar \
 --server.port=8550 \
 --self-conf.connect-timeout=60000 \
@@ -97,7 +136,7 @@ java -Xmx1024m -jar ./molachat.jar \
 --self-conf.max-file-size=1000 \
 --self-conf.max-request-size=1000 \
 --management.server.port=9002 \
---self-conf.upload-file-path=/data/data/com.termux/files/home/molachat/tmp/{app.id} \
+--self-conf.upload-file-path=/data/data/com.termux/files/home/molachat/tmp/molachat001 \
 --app.id=molachat001 \
 --app.server-type=tomcat \
 --app.version=2.3.1 \
@@ -106,7 +145,11 @@ java -Xmx1024m -jar ./molachat.jar \
 &
 ```
 
-- 关闭脚本
+- #### 编辑关闭脚本
+
+```bash
+vim shutdown.sh
+```
 
 ```bash
 #!/bin/bash
@@ -114,13 +157,15 @@ curl -X POST https://localhost:9002/actuator/shutdown -k
 echo \n
 ```
 
-#### 客户端连接
+### 4、如何使用
+
+- #### 客户端连接
 
 右侧弹出菜单，切换连接服务器：格式是ip:host
 
-#### chatgpt使用
+- #### chatgpt使用
 
-在启动脚本中配置app.robot-api-key.chatGpt=你的openai apiKey
+在start.sh脚本中配置app.robot-api-key.chatGpt=你的openai apiKey
 
 作为服务端的手机，开启科学上网
 
