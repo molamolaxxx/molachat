@@ -95,13 +95,13 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!--热更新-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-			<scope>true</scope>
-		</dependency>
+<!--		&lt;!&ndash;热更新&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-devtools</artifactId>-->
+<!--			<optional>true</optional>-->
+<!--			<scope>true</scope>-->
+<!--		</dependency>-->
 
 		<!--redis支持-->
 		<dependency>
